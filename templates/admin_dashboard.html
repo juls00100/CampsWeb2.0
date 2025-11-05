@@ -1,0 +1,76 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2>Admin Dashboard</h2>
+
+        <h3 class="mt-5 mb-3">System Overview</h3>
+        <div class="stat-grid">
+            <a href="{{ url_for('admin_manage_teachers_courses') }}" class="stat-box admin-teachers text-decoration-none">
+                <p class="stat-value text-danger">{{ total_teachers }} Teachers</p>
+                <small class="text-secondary">Add, view, and manage logins.</small>
+            </a>
+            <a href="{{ url_for('admin_manage_teachers_courses') }}" class="stat-box admin-teachers-courses text-decoration-none"> <p class="stat-value text-primary">{{ total_teachers }} Courses</p> <small class="text-secondary">Add/edit teachers and courses.</small>
+            </a>
+            <a href="{{ url_for('admin_manage_questions') }}" class="stat-box text-decoration-none" style="border-left-color: #ffc107;">
+                <p class="stat-label">Evaluation Questions</p>
+                <p class="stat-value text-warning-color">{{ total_questions }}</p>
+                <small class="text-secondary">Manage criteria.</small>
+            </a>
+            <div class="stat-box" style="border-left-color: #6c757d;">
+                <p class="stat-label">Total Students</p>
+                <p class="stat-value">{{ total_students }}</p>
+                <small class="text-secondary">Total registered users.</small>
+            </div>
+        </div>
+        
+        <h3 class="mt-5 mb-3">Pending Student Approvals ({{ students|length }})</h3>
+
+        {% if students %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>School ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Year Level</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.s_schoolID }}</td>
+                                <td>{{ student.s_first_name }} {{ student.s_last_name }}</td>
+                                <td>{{ student.s_email }}</td>
+                                <td>{{ student.s_year_level }}</td>
+                                <td>
+                                    <a href="{{ url_for('approve_student', student_id=student.s_schoolID) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        Approve
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-success mt-4">
+                All registered students have been approved.
+            </p>
+        {% endif %}
+    </div>
+
+{% endblock %}

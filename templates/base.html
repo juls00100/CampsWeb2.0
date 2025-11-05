@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Evaluation System{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">STUDENT HUB</div>
+                <div>
+                    {% if session.get('student_id') %}
+                        <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('evaluate') }}" class="nav-link">Evaluate</a>
+                        <a href="{{ url_for('logout') }}" class="nav-btn">Logout (Student)</a>
+                    {% elif session.get('admin_id') %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('admin_manage_teachers_courses') }}" class="nav-link">Teachers/Courses</a>
+                        <a href="{{ url_for('admin_manage_questions') }}" class="nav-link">Questions</a>
+                        <a href="{{ url_for('admin_logout') }}" class="nav-btn">Logout (Admin)</a>
+                    {% elif session.get('teacher_id') %} <a href="{{ url_for('teacher_dashboard') }}" class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('teacher_view_results') }}" class="nav-link">View Results</a>
+                        <a href="{{ url_for('teacher_logout') }}" class="nav-btn">Logout (Teacher)</a> {% else %}
+                        <a href="{{ url_for('index') }}" class="nav-btn">Login / Register</a>
+                        <a href="{{ url_for('admin_login') }}" class="nav-link">Admin Login</a>
+                        <a href="{{ url_for('teacher_login') }}" class="nav-link">Teacher Login</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <script>
+        // Tab switching logic for index.html
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            const selectedContent = document.getElementById(tabName);
+            const selectedButton = document.getElementById(`tab-button-${tabName}`);
+
+            if (selectedContent) selectedContent.classList.add('active');
+            if (selectedButton) selectedButton.classList.add('active');
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialTab = urlParams.get('tab');
+            if (initialTab) {
+                switchTab(initialTab);
+            } else if (document.getElementById('login')) {
+                switchTab('login');
+            } 
+            document.querySelectorAll('.flash-message').forEach(el => {
+                setTimeout(() => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(() => el.remove(), 500);
+                }, 5000);
+            });
+        };
+        function customConfirm(message, form) {
+            if (window.confirm(message)) {
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

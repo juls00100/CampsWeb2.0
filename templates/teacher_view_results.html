@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Detailed Results{% endblock %}
+
+{% block content %}
+    <div class="card card-dashboard">
+        {% include '_flash_messages.html' %} 
+
+        <h2>Detailed Evaluation Report</h2>
+        <h3 class="text-primary-color">{{ teacher.t_first_name }} {{ teacher.t_last_name }} ({{ teacher.t_course }})</h3>        <p class="text-info">This is a detailed, question-by-question breakdown of the evaluations for your course.</p>
+
+        <h3 class="mt-5 mb-3">Question-by-Question Summary</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Average Rating (1-5)</th>
+                    <th>Total Responses</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in stats %}
+                <tr>
+                    <td>{{ stat.q_text }}</td>
+                    <td><strong class="average-rating-value">{{ stat.avg_rating }}</strong></td>                    <td>{{ stat.total_responses }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3 class="mt-5 mb-3">Student Remarks ({{ remarks|length }})</h3>
+        {% if remarks %}
+            <div class="remarks-scroll-container">
+            {% for remark in remarks %}
+                <div class="remark-item">
+                    <p style="font-style: italic;">"{{ remark.e_remarks }}"</p>
+                    <small class="text-info">Submitted on {{ remark.e_timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p class="flash-message flash-info">No written remarks have been submitted yet.</p>
+        {% endif %}
+
+        <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-primary mt-5">Back to Dashboard</a>
+    </div>
+{% endblock %}

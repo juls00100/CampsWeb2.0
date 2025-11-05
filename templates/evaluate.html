@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluate Teacher{% endblock %}
+
+{% block content %}
+    <div class="card card-evaluate">
+        {% include '_flash_messages.html' %} 
+        
+        <h2>Teacher Evaluation Form</h2>
+        
+        {% if all_teachers and not teachers %} <p class="flash-message flash-success">
+                **Completed:** You have evaluated all **{{ all_teachers }}** teachers in the system.
+            </p>
+        {% elif not all_teachers %}
+            <p class="flash-message flash-info">
+                **INFO:** The system has no teachers. Please ask an administrator to perform the initial setup.
+            </p>
+        {% else %}
+            <p class="text-info">Please rate the teacher on a scale of 1 (Poor) to 5 (Excellent).</p>
+            
+            <form method="POST" class="mt-4">
+                <div class="form-group">
+                    <label for="teacher">Select Teacher</label>
+                    <select id="teacher" name="teacher" required>
+                        <option value="" disabled selected>-- Choose a Teacher --</option>
+                        {% for teacher in teachers %} <option value="{{ teacher.t_id }}">
+                                {{ teacher.t_first_name }} {{ teacher.t_last_name }} ({{ teacher.t_course }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <h3 class="mt-5 mb-3">Evaluation Criteria</h3>
+
+                <div class="evaluation-questions">
+                    {% for q in questions %}
+                    <div class="form-group evaluation-item">
+                        <label>Q{{ loop.index }}: {{ q.q_text }}</label> 
+                        <div class="rating-options">
+                            {% for i in range(1, 6) %}
+                                <div>
+                                    <input type="radio" id="q-{{ q.q_id }}-{{ i }}" name="q_{{ q.q_id }}" value="{{ i }}" required> 
+                                    <label for="q-{{ q.q_id }}-{{ i }}">{{ i }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group mt-5">
+                    <label for="remarks">Additional Remarks (Optional)</label>
+                    <textarea id="remarks" name="remarks" rows="4" placeholder="Provide constructive comments or feedback here..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Evaluation</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

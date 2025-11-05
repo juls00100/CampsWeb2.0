@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Login / Register{% endblock %}
+
+{% block content %}
+    <div class="card card-auth">
+        {% include '_flash_messages.html' %} 
+
+        {% if teachers_empty %} <h2 class="text-center">Initial Application Setup</h2>
+            <p class="text-center text-info">Please use the Admin Login to set up initial teachers.</p> {% else %}
+            <div class="tabs">
+                <button class="tab-button" id="tab-button-login" onclick="switchTab('login')">Student Login</button>
+                <button class="tab-button" id="tab-button-register" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <div id="login" class="tab-content active">
+                <h2 class="text-center">Student Login</h2>
+                <form method="POST" class="mt-4">
+                    <input type="hidden" name="action" value="login">
+                    <div class="form-group">
+                        <label for="login_school_id">School ID</label>
+                        <input type="text" id="login_school_id" name="login_school_id" placeholder="Your School ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login_password">Password</label>
+                        <input type="password" id="login_password" name="login_password" placeholder="Your Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login as Student</button>
+                    <p class="text-center mt-3">
+                        <a href="{{ url_for('admin_login') }}" class="text-info">Admin Login</a> | 
+                        <a href="{{ url_for('teacher_login') }}" class="text-info">Teacher Login</a>
+                    </p>
+                </form>
+            </div>
+
+            <div id="register" class="tab-content">
+                <h2 class="text-center">Student Registration</h2>
+                <p class="text-center text-info">Your account will be pending admin approval after registration.</p>
+                <form method="POST" class="mt-4 form-grid">
+                    <input type="hidden" name="action" value="register">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="reg_school_id">School ID</label>
+                        <input type="text" id="reg_school_id" name="reg_school_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_password">Password</label>
+                        <input type="password" id="reg_password" name="reg_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_first_name">First Name</label>
+                        <input type="text" id="reg_first_name" name="reg_first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_last_name">Last Name</label>
+                        <input type="text" id="reg_last_name" name="reg_last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_email">Email</label>
+                        <input type="email" id="reg_email" name="reg_email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_year_level">Year Level</label>
+                        <select id="reg_year_level" name="reg_year_level" required>
+                            <option value="" disabled selected>Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Register Account</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

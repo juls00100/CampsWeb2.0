@@ -1,0 +1,68 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Edit {{ user_type|capitalize }}{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% include '_flash_messages.html' %} 
+        
+        <h2>Edit {{ user_type|capitalize }} Account</h2>
+        <p class="text-info">You can modify all details for this user. **Evaluations cannot be edited**.</p>
+
+        <h3 class="mt-4 mb-3">Editing: 
+            {% if user_type == 'student' %}
+                {{ user_data.s_first_name }} {{ user_data.s_last_name }} (ID: {{ user_data.s_schoolID }})
+            {% elif user_type == 'teacher' %} {{ user_data.t_first_name }} {{ user_data.t_last_name }} (Course: {{ user_data.t_course }}) {% endif %}
+        </h3>
+        
+        <form method="POST" class="form-grid">
+            
+            {% if user_type == 'student' %}
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="s_schoolID">School ID (Cannot be changed)</label>
+                <input type="text" id="s_schoolID" name="s_schoolID" value="{{ user_data.s_schoolID }}" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="s_first_name">First Name</label>
+                <input type="text" id="s_first_name" name="s_first_name" value="{{ user_data.s_first_name }}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="s_last_name">Last Name</label>
+                <input type="text" id="s_last_name" name="s_last_name" value="{{ user_data.s_last_name }}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="s_email">Email</label>
+                <input type="email" id="s_email" name="s_email" value="{{ user_data.s_email }}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="s_year_level">Year Level</label>
+                <select id="s_year_level" name="s_year_level" class="form-control" required>
+                    <option value="1st Year" {% if user_data.s_year_level == '1st Year' %}selected{% endif %}>1st Year</option>
+                    <option value="2nd Year" {% if user_data.s_year_level == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                    <option value="3rd Year" {% if user_data.s_year_level == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                    <option value="4th Year" {% if user_data.s_year_level == '4th Year' %}selected{% endif %}>4th Year</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="s_password">New Password (Current password required to be entered here for an update)</label>
+                <input type="text" id="s_password" name="s_password" value="{{ user_data.s_password }}" class="form-control" required>
+            </div>
+            {% elif user_type == 'teacher' %} <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="t_username">Login Username</label> <input type="text" id="t_username" name="t_username" value="{{ user_data.t_username }}" class="form-control" required> </div>
+            <div class="form-group">
+                <label for="t_email">Email</label> <input type="email" id="t_email" name="t_email" value="{{ user_data.t_email }}" class="form-control" required> </div>
+            <div class="form-group">
+                <label for="t_first_name">First Name</label> <input type="text" id="t_first_name" name="t_first_name" value="{{ user_data.t_first_name }}" class="form-control" required> </div>
+            <div class="form-group">
+                <label for="t_last_name">Last Name</label> <input type="text" id="t_last_name" name="t_last_name" value="{{ user_data.t_last_name }}" class="form-control" required> </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="t_course">Course Title</label> <input type="text" id="t_course" name="t_course" value="{{ user_data.t_course }}" class="form-control" required> </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="t_password">New Password (Current password required to be entered here for an update)</label> <input type="text" id="t_password" name="t_password" value="{{ user_data.t_password }}" class="form-control" required> </div>
+            
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary mt-4" style="grid-column: 1 / -1;">Save All Changes (Admin Override)</button>
+        </form>
+    </div>
+{% endblock %}

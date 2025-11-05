@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="card card-dashboard">
+        {% include '_flash_messages.html' %} 
+        
+        <h2>Welcome back, {{ session['student_name'] }}!</h2>
+        
+        <div class="stat-grid mt-4">
+            <div class="stat-box status-{{ student.s_status.lower() }}">
+                <p class="stat-label">Account Status</p>
+                <p class="stat-value">{{ student.s_status }}</p>
+                <small>Current Approval State</small>
+            </div>
+            
+            <div class="stat-box">
+                <p class="stat-label">Evaluations Done</p>
+                <p class="stat-value">{{ evaluations_count }}</p>
+                <small>Total forms submitted</small>
+            </div>
+
+            <div class="stat-box stat-progress">
+                <p class="stat-label">Teachers Left</p> <p class="stat-value">{{ remaining_teachers }} / {{ total_teachers }}</p> <small>Progress towards completion</small>
+            </div>
+        </div>
+        
+        <div class="user-details mt-4">
+            <h3>Your Details</h3>
+            <p><strong>School ID:</strong> <span>{{ student.id }}</span></p>
+            <p><strong>Email:</strong> <span>{{ student.s_email }}</span></p>
+            <p><strong>Year Level:</strong> <span>{{ student.s_year_level }}</span></p>
+            <p><strong>Status:</strong> <span class="text-{{ 'success' if student.s_status == 'APPROVED' else 'warning' }}">{{ student.s_status }}</span></p>
+        </div>
+
+        <h3 class="mt-5 mb-3">Update Your Profile (Self-Service)</h3>
+        <p class="text-info">You can update your personal details and password here.</p>
+        <form method="POST" class="form-grid mt-4">
+            <div class="form-group">
+                <label for="s_first_name">First Name</label>
+                <input type="text" id="s_first_name" name="s_first_name" value="{{ student.s_first_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="s_last_name">Last Name</label>
+                <input type="text" id="s_last_name" name="s_last_name" value="{{ student.s_last_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="s_email">Email</label>
+                <input type="email" id="s_email" name="s_email" value="{{ student.s_email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="s_year_level">Year Level</label>
+                <select id="s_year_level" name="s_year_level" required>
+                    <option value="1st Year" {% if student.year == '1st Year' %}selected{% endif %}>1st Year</option>
+                    <option value="2nd Year" {% if student.year == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                    <option value="3rd Year" {% if student.year == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                    <option value="4th Year" {% if student.year == '4th Year' %}selected{% endif %}>4th Year</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="s_password">New Password</label>
+                <input type="password" id="s_password" name="s_password" placeholder="Enter new password to change" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-4" style="grid-column: 1 / -1;">Update My Profile</button>
+        </form>
+    </div>
+{% endblock %}

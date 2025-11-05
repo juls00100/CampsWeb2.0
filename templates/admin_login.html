@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+    <div class="card card-auth">
+        {% include '_flash_messages.html' %} 
+
+        <h2 class="text-center">Admin Login</h2>
+        <p class="text-center text-info">Use your Admin Account.</p>
+        <form method="POST" class="mt-4">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Your Admin Username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Your Password" required>
+            </div>
+            <button type="submit" class="btn btn-secondary">Login as Admin</button>
+        </form>
+    </div>
+{% endblock %}
