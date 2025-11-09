@@ -176,7 +176,7 @@ def dashboard():
             return redirect(url_for('dashboard'))
 
     student_data = query_db(
-        "SELECT s_id AS id, s_schoolID, s_email, s_first_name, s_last_name, s_year_level AS year, s_status FROM tbl_student WHERE s_schoolID = %s",
+        "SELECT s_schoolID, s_email, s_first_name, s_last_name, s_year_level, s_status FROM tbl_student WHERE s_schoolID = %s",
         (student_id,), one=True
     )
 
@@ -293,70 +293,83 @@ def teacher_logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
 
-@app.route('/teacher_dashboard', methods=['GET', 'POST'])
-@teacher_required
+@app.route('/teacher/dashboard', methods=['GET', 'POST'])
+@teacher_required # Using the corrected decorator name
 def teacher_dashboard():
-    teacher_id = session['teacher_id']
+    teacher_id = session.get('teacher_id')
+    
+    # 1. Fetch Teacher Data
+    teacher_data = query_db("SELECT t_id, t_username, t_email, t_first_name, t_last_name, t_course, t_password FROM tbl_teacher WHERE t_id = %s", (teacher_id,), one=True)
+    
+    if not teacher_data:
+        flash('Teacher account not found.', 'danger')
+        return redirect(url_for('teacher_logout'))
 
+    # 2. Fetch Evaluation Count for this teacher
+    evaluation_count_result = query_db("SELECT COUNT(DISTINCT s_schoolID) as evaluation_count FROM tbl_evaluation WHERE t_id = %s", (teacher_id,), one=True)
+    evaluation_count = evaluation_count_result['evaluation_count']
+    
+    # 3. Fetch Total Approved Students (for context/comparison)
+    total_approved_students_result = query_db("SELECT COUNT(s_id) as total_approved_students FROM tbl_student WHERE s_status = 'Approved'", one=True)
+    total_approved_students = total_approved_students_result['total_approved_students']
+
+    # 4. Calculate Overall Average Rating (The new logic you requested)
+    overall_avg_result = query_db("""
+        SELECT 
+            ROUND(AVG(ted.ed_value), 2) AS overall_avg
+        FROM 
+            tbl_evaluation_details ted
+        JOIN 
+            tbl_evaluation te ON ted.e_id = te.e_id
+        WHERE 
+            te.t_id = %s
+    """, (teacher_id,), one=True)
+    
+    overall_avg_value = overall_avg_result['overall_avg'] if overall_avg_result and overall_avg_result['overall_avg'] is not None else 'N/A'
+    
+    # Process POST request for profile update
     if request.method == 'POST':
         action = request.form.get('action')
         
         if action == 'edit_profile':
-            new_password = request.form.get('t_password')
-            username = request.form.get('t_username')
-            first_name = request.form.get('t_first_name')
-            last_name = request.form.get('t_last_name')
-            email = request.form.get('t_email')
-            course = request.form.get('t_course')
+            new_username = request.form['t_username']
+            new_email = request.form['t_email']
+            new_first_name = request.form['t_first_name']
+            new_last_name = request.form['t_last_name']
+            new_course = request.form['t_course']
             
-            if not new_password:
-                flash('New Password field cannot be empty for an update.', 'danger')
+            # --- REFINEMENT FOR OPTIONAL PASSWORD UPDATE ---
+            new_password = request.form.get('t_password')
+            
+            # Use the existing password if a new one was not entered.
+            # NOTE: If your app uses password hashing, you must hash the new_password here 
+            # or skip the update if it's empty. Assuming plain text for this simple update.
+            password_to_save = new_password if new_password else teacher_data['t_password']
+
+            try:
+                query_db("""
+                    UPDATE tbl_teacher SET 
+                        t_username = %s, t_email = %s, t_first_name = %s, t_last_name = %s, 
+                        t_course = %s, t_password = %s
+                    WHERE t_id = %s
+                """, (new_username, new_email, new_first_name, new_last_name, new_course, password_to_save, teacher_id))
+                
+                session['teacher_name'] = f"{new_first_name} {new_last_name}"
+                flash('Profile updated successfully!', 'success')
                 return redirect(url_for('teacher_dashboard'))
+            
+            except pymysql.err.IntegrityError:
+                flash('Username or Email already taken.', 'danger')
+            except Exception as e:
+                flash(f'An unexpected error occurred during update.', 'danger')
 
-            query_db(
-                "UPDATE tbl_teacher SET t_username = %s, t_password = %s, t_first_name = %s, t_last_name = %s, t_email = %s, t_course = %s WHERE t_id = %s",
-                (username, new_password, first_name, last_name, email, course, teacher_id)
-            )
-            session['teacher_name'] = f"{first_name} {last_name}"
-            session['teacher_course'] = course
-            flash('Profile updated successfully! Please re-login with the new details if you changed your username.', 'success')
-            return redirect(url_for('teacher_logout'))
-
-    teacher_data = query_db(
-        "SELECT t_id, t_username, t_email, t_first_name, t_last_name, t_course FROM tbl_teacher WHERE t_id = %s",
-        (teacher_id,), one=True
+    return render_template('teacher_dashboard.html', 
+        teacher=teacher_data, 
+        evaluation_count=evaluation_count,
+        total_approved_students=total_approved_students,
+        overall_avg=overall_avg_value,
     )
-
-    summary_stats = query_db("""
-        SELECT 
-            q.q_text, 
-            ROUND(AVG(ed.ed_value), 2) AS avg_rating,
-            COUNT(e.e_id) AS total_responses
-        FROM tbl_evaluation e
-        JOIN tbl_evaluation_details ed ON e.e_id = ed.e_id
-        JOIN tbl_evaluation_questions q ON ed.q_id = q.q_id
-        WHERE e.t_id = %s
-        GROUP BY q.q_id
-        ORDER BY q.q_order
-    """, (teacher_id,))
-    total_rating_sum = sum(s['avg_rating'] * s['total_responses'] for s in summary_stats if s['avg_rating'])
-    total_responses_count = sum(s['total_responses'] for s in summary_stats)
     
-    overall_avg = round(total_rating_sum / total_responses_count, 2) if total_responses_count > 0 else 0.0
-
-    total_approved_students_query = query_db(
-        "SELECT COUNT(*) AS count FROM tbl_student WHERE s_status = 'Approved'", 
-        one=True
-    )
-    total_approved_students = total_approved_students_query['count']
-
-    summary = {
-        'overall_avg': overall_avg,
-        'evaluation_count': query_db("SELECT COUNT(DISTINCT s_schoolID) AS count FROM tbl_evaluation WHERE t_id = %s", (teacher_id,), one=True)['count'],
-    }
-
-    return render_template('teacher_dashboard.html', teacher=teacher_data, summary=summary, stats=summary_stats, total_approved_students=total_approved_students)
-
 @app.route('/teacher_view_results')
 @teacher_required
 def teacher_view_results():
@@ -392,6 +405,15 @@ def teacher_view_results():
         
     return render_template('teacher_view_results.html', teacher=teacher_data, stats=stats, remarks=remarks)
 
+def admin_login_required(f):
+    @wraps(f) # <--- THIS IS THE CRITICAL FIX
+    def wrapper(*args, **kwargs):
+        if 'admin_id' not in session:
+            flash('Admin access required.', 'danger')
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return wrapper
+    
 @app.route('/admin_login', methods=['GET', 'POST'])
 def admin_login():
     if session.get('admin_id'):
@@ -641,7 +663,24 @@ def admin_manage_questions():
     questions = query_db("SELECT q_id, q_text, q_order FROM tbl_evaluation_questions ORDER BY q_order")
     return render_template('admin_manage_questions.html', questions=questions)
 
+@app.route('/admin/manage-students')
+@login_required(role='admin') 
+def admin_manage_students():
+    """
+    Handles the Admin 'Manage Student Accounts' page.
+    """
+    conn = get_db()
+    
+    # Query all student data, ordered by status (Pending first)
+    students = query_db(
+        "SELECT * FROM tbl_student ORDER BY FIELD(s_status, 'Pending', 'Approved')"
+    )
+    
+    return render_template('admin_manage_students.html', students=students)
+
 if __name__ == '__main__':
     with app.app_context():
-        init_db() 
+        #init_db() 
+
+        pass
     app.run(debug=True)

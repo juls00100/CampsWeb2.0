@@ -8,7 +8,8 @@
         
         <h2>Teacher Evaluation Form</h2>
         
-        {% if all_teachers and not teachers %} <p class="flash-message flash-success">
+        {% if all_teachers and not teachers %}
+            <p class="flash-message flash-success">
                 **Completed:** You have evaluated all **{{ all_teachers }}** teachers in the system.
             </p>
         {% elif not all_teachers %}
@@ -23,7 +24,8 @@
                     <label for="teacher">Select Teacher</label>
                     <select id="teacher" name="teacher" required>
                         <option value="" disabled selected>-- Choose a Teacher --</option>
-                        {% for teacher in teachers %} <option value="{{ teacher.t_id }}">
+                        {% for teacher in teachers %}
+                            <option value="{{ teacher.t_id }}">
                                 {{ teacher.t_first_name }} {{ teacher.t_last_name }} ({{ teacher.t_course }})
                             </option>
                         {% endfor %}
@@ -31,7 +33,6 @@
                 </div>
                 
                 <h3 class="mt-5 mb-3">Evaluation Criteria</h3>
-
                 <div class="evaluation-questions">
                     {% for q in questions %}
                     <div class="form-group evaluation-item">

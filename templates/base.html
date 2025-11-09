@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">       
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,37 +9,39 @@
 </head>
 <body>
     <header>
-        <div class="container">
-            <nav>
-                <div class="logo">STUDENT HUB</div>
-                <div>
-                    {% if session.get('student_id') %}
-                        <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
-                        <a href="{{ url_for('evaluate') }}" class="nav-link">Evaluate</a>
-                        <a href="{{ url_for('logout') }}" class="nav-btn">Logout (Student)</a>
-                    {% elif session.get('admin_id') %}
-                        <a href="{{ url_for('admin_dashboard') }}" class="nav-link">Dashboard</a>
-                        <a href="{{ url_for('admin_manage_teachers_courses') }}" class="nav-link">Teachers/Courses</a>
-                        <a href="{{ url_for('admin_manage_questions') }}" class="nav-link">Questions</a>
-                        <a href="{{ url_for('admin_logout') }}" class="nav-btn">Logout (Admin)</a>
-                    {% elif session.get('teacher_id') %} <a href="{{ url_for('teacher_dashboard') }}" class="nav-link">Dashboard</a>
-                        <a href="{{ url_for('teacher_view_results') }}" class="nav-link">View Results</a>
-                        <a href="{{ url_for('teacher_logout') }}" class="nav-btn">Logout (Teacher)</a> {% else %}
-                        <a href="{{ url_for('index') }}" class="nav-btn">Login / Register</a>
-                        <a href="{{ url_for('admin_login') }}" class="nav-link">Admin Login</a>
-                        <a href="{{ url_for('teacher_login') }}" class="nav-link">Teacher Login</a>
-                    {% endif %}
-                </div>
-            </nav>
+    <div class="container"> 
+        <div class="logo">
+            <img src="{{ url_for('static', filename='p/logo.jpg') }}" alt="Evaluation Website Logo" class="logo-image">
+            STUDENTS EVALUATION
         </div>
-    </header>
+
+        <div class="button-group">
+            {% if session.get('student_id') %}
+                <a href="{{ url_for('dashboard') }}" class="nav-btn">Dashboard</a>
+                <a href="{{ url_for('evaluate') }}" class="nav-btn">Evaluate</a>
+                <a href="{{ url_for('logout') }}" class="nav-btn1">Logout (Student)</a>
+            {% elif session.get('admin_id') %}
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-btn">Dashboard</a>
+                <a href="{{ url_for('admin_manage_teachers_courses') }}" class="nav-btn">Teachers/Courses</a>
+                <a href="{{ url_for('admin_manage_questions') }}" class="nav-btn">Questions</a>
+                <a href="{{ url_for('admin_logout') }}" class="nav-btn1">Logout (Admin)</a>
+            {% elif session.get('teacher_id') %}
+                <a href="{{ url_for('teacher_dashboard') }}" class="nav-btn">Dashboard</a>
+                <a href="{{ url_for('teacher_logout') }}" class="nav-btn1">Logout (Teacher)</a>
+            {% else %}
+                <a href="{{ url_for('index') }}" class="btn btn-primary">Login / Register</a> 
+                <a href="{{ url_for('admin_login') }}" class="btn btn-secondary">Admin Login</a>
+                <a href="{{ url_for('teacher_login') }}" class="btn btn-secondary">Teacher Login</a>
+            {% endif %}
+        </div>
+        </div>
+</header>
 
     <main>
         {% block content %}{% endblock %}
     </main>
     
     <script>
-        // Tab switching logic for index.html
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
@@ -76,6 +78,49 @@
                 form.submit();
             }
         }
+        document.addEventListener('DOMContentLoaded', (event) => {
+    
+    const registerButton = document.getElementById('registerButton');
+    const registerForm = document.getElementById('registerForm');
+
+    
+    if (registerButton && registerForm) {
+        registerButton.addEventListener('click', () => {
+            
+            if (registerForm.checkValidity()) {
+                
+                registerForm.submit();
+            } else {
+                
+                registerForm.reportValidity();
+            }
+        });
+    }
+});
+function customConfirm(message, form) {
+            if (window.confirm(message)) {
+                form.submit();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', (event) => {
+    
+    const registerButton = document.getElementById('registerButton');
+    const registerForm = document.getElementById('registerForm');
+
+    
+    if (registerButton && registerForm) {
+        registerButton.addEventListener('click', () => {
+            
+            if (registerForm.checkValidity()) {
+                
+                registerForm.submit();
+            } else {
+                
+                registerForm.reportValidity();
+            }
+        });
+    }
+});
     </script>
 </body>
 </html>

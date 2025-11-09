@@ -1,63 +1,86 @@
 {% extends "base.html" %}
 
-{% block title %}Teacher Dashboard{% endblock %} {% block content %}
+{% block title %}Teacher Dashboard{% endblock %} 
+
+{% block content %}
     <div class="card card-dashboard">
         {% include '_flash_messages.html' %} 
         
-        <h2>Welcome, {{ session['teacher_name'] }}!</h2> <p class="text-info">Below is the evaluation summary for your assigned course: **{{ teacher.t_course }}**</p> <div class="stat-grid mt-4">
-            <div class="stat-box">
-                <p class="stat-label">Course Name</p>
-                <p class="stat-value text-primary-color">{{ teacher.t_course }}</p> <small>The course you are evaluating</small>
+        <h2>Welcome, {{ session['teacher_name'] }}!</h2> 
+        <p class="text-info">Below is the evaluation summary for your assigned course: <strong>{{ teacher.t_course }}</strong></p> 
+
+        <h3 class="mt-5 mb-3">Overall Course Rating (1.00 - 5.00)</h3>
+        
+        <div class="stat-grid mt-4">
+            <div class="stat-box overall-avg">
+                <p class="stat-label">Average Evaluation Score</p>
+                <span class="stat-value">{{ overall_avg }}</span>
+                <small>Average of all question ratings submitted for this course.</small>
             </div>
+        </div>
+
+        <h3 class="mt-5 mb-3">Evaluation Metrics</h3>
+        <div class="stat-grid">
             <div class="stat-box">
                 <p class="stat-label">Total Forms Submitted</p>
-                <p class="stat-value text-secondary-color">{{ summary.evaluation_count }}</p>
-                <small>Forms submitted for your course</small>
+                <p class="stat-value text-secondary-color">{{ evaluation_count }}</p>
+                <small>Number of students who have evaluated you.</small>
             </div>
             <div class="stat-box">
                 <p class="stat-label">System Student Base</p>
                 <p class="stat-value">{{ total_approved_students }}</p>
-                <small>Total approved students in the system</small>
+                <small>Total approved students in the system.</small>
+            </div>
+            <div class="stat-box">
+                <p class="stat-label">Response Rate</p>
+                {% if total_approved_students and total_approved_students > 0 %}
+                    <p class="stat-value text-primary-color">
+                        {{ ((evaluation_count / total_approved_students) * 100) | round(2) }}%
+                    </p>
+                    <small>{{ evaluation_count }} out of {{ total_approved_students }} approved students.</small>
+                {% else %}
+                    <p class="stat-value text-primary-color">N/A</p>
+                    <small>No approved students to calculate rate.</small>
+                {% endif %}
             </div>
         </div>
-
-        <h3 class="mt-5 mb-3">Evaluation Summary</h3>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Question</th>
-                        <th>Average Rating</th>
-                        <th>Responses</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stat in stats %}
-                    <tr>
-                        <td>{{ stat.q_text }}</td>
-                        <td><strong class="average-rating-value">{{ stat.avg_rating }}</strong></td>
-                        <td>{{ stat.total_responses }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        
+        <div class="actions-container">
+            <a href="{{ url_for('teacher_view_results') }}" class="btn btn-primary btn-lg">
+                View Detailed Report (QxQ)
+            </a>
+            <a href="#update-profile" class="btn btn-secondary btn-lg">
+                Edit My Profile
+            </a>
         </div>
-
-        <h3 class="mt-5 mb-3">Update Profile</h3>
-        <p class="text-info">You can update your login credentials and course details here. You cannot delete your account from here.</p>
+        
+        <h3 id="update-profile" class="mt-5 mb-3">Update Profile</h3>
+        <p class="text-info">You can update your login credentials and course details here. Your current course is: <strong>{{ teacher.t_course }}</strong>.</p>
+        
         <form method="POST" class="form-grid mt-4">
             <input type="hidden" name="action" value="edit_profile">
             <div class="form-group">
-                <label for="t_username">Username</label> <input type="text" id="t_username" name="t_username" value="{{ teacher.t_username }}" required> </div>
+                <label for="t_username">Username</label> 
+                <input type="text" id="t_username" name="t_username" value="{{ teacher.t_username }}" required> 
+            </div>
             <div class="form-group">
-                <label for="t_email">Email</label> <input type="email" id="t_email" name="t_email" value="{{ teacher.t_email }}" required> </div>
+                <label for="t_email">Email</label> 
+                <input type="email" id="t_email" name="t_email" value="{{ teacher.t_email }}" required> 
+            </div>
             <div class="form-group">
-                <label for="t_first_name">First Name</label> <input type="text" id="t_first_name" name="t_first_name" value="{{ teacher.t_first_name }}" required> </div>
+                <label for="t_first_name">First Name</label> 
+                <input type="text" id="t_first_name" name="t_first_name" value="{{ teacher.t_first_name }}" required> 
+            </div>
             <div class="form-group">
-                <label for="t_last_name">Last Name</label> <input type="text" id="t_last_name" name="t_last_name" value="{{ teacher.t_last_name }}" required> </div>
-            <div class="form-group">
-                <label for="t_password">New Password</label> <input type="password" id="t_password" name="t_password" placeholder="Enter new password to change" required> </div>
-            <button type="submit" class="btn btn-primary mt-4" style="grid-column: 1 / -1;">Update Profile</button>
+                <label for="t_last_name">Last Name</label> 
+                <input type="text" id="t_last_name" name="t_last_name" value="{{ teacher.t_last_name }}" required> 
+            </div>
+            
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="t_password">New Password</label> 
+                <input type="password" id="t_password" name="t_password" placeholder="Enter new password to change" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3" style="grid-column: 1 / -1;">Save Profile Changes</button>
         </form>
     </div>
 {% endblock %}

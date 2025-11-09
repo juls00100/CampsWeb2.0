@@ -28,15 +28,15 @@
         
         <div class="user-details mt-4">
             <h3>Your Details</h3>
-            <p><strong>School ID:</strong> <span>{{ student.id }}</span></p>
+            <p><strong>School ID:</strong> <span>{{ student.s_schoolID }}</span></p>
             <p><strong>Email:</strong> <span>{{ student.s_email }}</span></p>
             <p><strong>Year Level:</strong> <span>{{ student.s_year_level }}</span></p>
-            <p><strong>Status:</strong> <span class="text-{{ 'success' if student.s_status == 'APPROVED' else 'warning' }}">{{ student.s_status }}</span></p>
+            <p><strong>Registered On:</strong> <span>{{ student.s_registration_date }}</span></p>
         </div>
 
-        <h3 class="mt-5 mb-3">Update Your Profile (Self-Service)</h3>
-        <p class="text-info">You can update your personal details and password here.</p>
+        <h3 class="mt-5 mb-3">Update Profile</h3>
         <form method="POST" class="form-grid mt-4">
+            <input type="hidden" name="action" value="edit_profile">
             <div class="form-group">
                 <label for="s_first_name">First Name</label>
                 <input type="text" id="s_first_name" name="s_first_name" value="{{ student.s_first_name }}" required>
@@ -52,17 +52,23 @@
             <div class="form-group">
                 <label for="s_year_level">Year Level</label>
                 <select id="s_year_level" name="s_year_level" required>
-                    <option value="1st Year" {% if student.year == '1st Year' %}selected{% endif %}>1st Year</option>
-                    <option value="2nd Year" {% if student.year == '2nd Year' %}selected{% endif %}>2nd Year</option>
-                    <option value="3rd Year" {% if student.year == '3rd Year' %}selected{% endif %}>3rd Year</option>
-                    <option value="4th Year" {% if student.year == '4th Year' %}selected{% endif %}>4th Year</option>
+                    <option value="1st Year" {% if student.s_year_level == '1st Year' %}selected{% endif %}>1st Year</option>
+                    <option value="2nd Year" {% if student.s_year_level == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                    <option value="3rd Year" {% if student.s_year_level == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                    <option value="4th Year" {% if student.s_year_level == '4th Year' %}selected{% endif %}>4th Year</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="s_password">New Password</label>
                 <input type="password" id="s_password" name="s_password" placeholder="Enter new password to change" required>
             </div>
-            <button type="submit" class="btn btn-primary mt-4" style="grid-column: 1 / -1;">Update My Profile</button>
+            <div class="form-group">
+                <label for="s_confirm_password">Confirm Password</label>
+                <input type="password" id="s_confirm_password" name="s_confirm_password" placeholder="Confirm new password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Update Profile</button>
         </form>
+        
     </div>
 {% endblock %}

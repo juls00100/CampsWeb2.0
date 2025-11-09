@@ -1,0 +1,60 @@
+{% extends "admin_base.html" %}
+wwwwwwww
+{% block title %}Manage Student Accounts{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% include '_flash_messages.html' %} 
+        
+        <h2>Manage Student Accounts</h2>
+        <p class="text-info">A list of all registered student accounts in the system, ordered by status (Pending first).</p>
+
+        {% if students %}
+            <div class="table-responsive mt-4">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>School ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Year Level</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.s_schoolID }}</td>
+                                <td>{{ student.s_first_name }} {{ student.s_last_name }}</td>
+                                <td>{{ student.s_email }}</td>
+                                <td>{{ student.s_year_level }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if student.s_status == 'Approved' %}bg-success
+                                        {% elif student.s_status == 'Pending' %}bg-warning text-dark
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ student.s_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin_edit_user', user_type='student', user_id=student.s_schoolID) }}" 
+                                       class="btn btn-sm btn-warning me-2">
+                                        Edit
+                                    </a>
+                                    <form method="POST" action="{{ url_for('admin_manage_students', school_id=student.s_schoolID) }}" 
+                                          class="d-inline" 
+                                          onsubmit="return confirm('WARNING: Deleting {{ student.s_first_name }} is permanent. Are you sure?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-info mt-4">No student accounts found in the database.</p>
+        {% endif %}
+    </div>
+{% endblock %}

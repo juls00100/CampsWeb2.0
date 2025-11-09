@@ -3,13 +3,6 @@ USE evaluation_system;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS tbl_evaluation_details;
-DROP TABLE IF EXISTS tbl_evaluation;
-DROP TABLE IF EXISTS tbl_evaluation_questions;
-DROP TABLE IF EXISTS tbl_teacher; 
-DROP TABLE IF EXISTS tbl_student;
-DROP TABLE IF EXISTS tbl_admin;
-
 CREATE TABLE tbl_admin (
     a_id       INT          AUTO_INCREMENT PRIMARY KEY,
     a_username VARCHAR(50)  NOT NULL UNIQUE,
@@ -36,7 +29,8 @@ CREATE TABLE tbl_student (
     s_year_level  VARCHAR(50)  NOT NULL,
     s_status      ENUM('Pending', 'Approved') DEFAULT 'Pending'
 );
-
+SELECT *FROM tbl_student WHERE s_schoolID = "scc-00-02";
+SELECT *FROM tbl_admin;
 
 CREATE TABLE tbl_evaluation_questions (
     q_id    INT          AUTO_INCREMENT PRIMARY KEY,

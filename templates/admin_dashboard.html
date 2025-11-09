@@ -12,26 +12,30 @@
             {% endif %}
         {% endwith %}
 
-        <h2>Admin Dashboard</h2>
+        <h2><b>Admin Dashboard</b></h2>
 
         <h3 class="mt-5 mb-3">System Overview</h3>
         <div class="stat-grid">
-            <a href="{{ url_for('admin_manage_teachers_courses') }}" class="stat-box admin-teachers text-decoration-none">
-                <p class="stat-value text-danger">{{ total_teachers }} Teachers</p>
-                <small class="text-secondary">Add, view, and manage logins.</small>
+
+            <a href="{{ url_for('admin_manage_teachers_courses') }}" class="stat-box admin-teachers-courses text-decoration-none" 
+            style="border-left-color: #6c757d;">
+                <p class="stat-label">Teachers</p>
+                <p class="stat-value text-warning-color">{{ total_teachers }}</p>
             </a>
-            <a href="{{ url_for('admin_manage_teachers_courses') }}" class="stat-box admin-teachers-courses text-decoration-none"> <p class="stat-value text-primary">{{ total_teachers }} Courses</p> <small class="text-secondary">Add/edit teachers and courses.</small>
-            </a>
-            <a href="{{ url_for('admin_manage_questions') }}" class="stat-box text-decoration-none" style="border-left-color: #ffc107;">
+
+            <a href="{{ url_for('admin_manage_questions') }}" class="stat-box text-decoration-none" 
+            style="border-left-color: #6c757d;">
                 <p class="stat-label">Evaluation Questions</p>
                 <p class="stat-value text-warning-color">{{ total_questions }}</p>
-                <small class="text-secondary">Manage criteria.</small>
             </a>
-            <div class="stat-box" style="border-left-color: #6c757d;">
+            
+            <a href="{{ url_for('admin_manage_students') }}" class="stat-box text-decoration-none" 
+            style="border-left-color: #6c757d;">
                 <p class="stat-label">Total Students</p>
-                <p class="stat-value">{{ total_students }}</p>
-                <small class="text-secondary">Total registered users.</small>
-            </div>
+                <p class="stat-value text-warning-color">{{ total_students }}</p>
+            </a>
+
+            
         </div>
         
         <h3 class="mt-5 mb-3">Pending Student Approvals ({{ students|length }})</h3>

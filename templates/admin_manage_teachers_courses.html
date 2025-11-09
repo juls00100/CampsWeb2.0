@@ -1,12 +1,13 @@
 {% extends "admin_base.html" %}
-
-{% block title %}Manage Subjects/Courses{% endblock %}
+wwwwwwww
+{% block title %}<b>Manage Subjects/Courses</b>{% endblock %}
 
 {% block content %}
     <div class="card-dashboard">
         {% include '_flash_messages.html' %} 
         
-        <h2>Manage Teachers/Courses</h2> <p class="text-info">Add, view, and manage **Teacher** accounts and the courses they teach. The teacher account also serves as the login for viewing results.</p> <h3 class="mt-5 mb-3">Add New Teacher/Course</h3> <form method="POST" class="form-grid">
+        <h2><b>Manage Teachers/Courses</b></h2> 
+        <br>
             <input type="hidden" name="action" value="add">
             <div class="form-group">
                 <label for="t_username" class="form-label">Login Username</label> <input type="text" id="t_username" name="t_username" class="form-control" required> </div>
