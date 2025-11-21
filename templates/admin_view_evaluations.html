@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "base.html" %}
 wwwwwwww
 {% block title %}Results for {{ teacher.t_first_name }} {{ teacher.t_last_name }}{% endblock %} {% block content %}
     <div class="card-dashboard">
@@ -11,8 +11,8 @@ wwwwwwww
         {% endwith %}
         
         <h2>Evaluation Results</h2>
-        <h3 class="text-primary">{{ teacher.t_first_name }} {{ teacher.t_last_name }} ({{ teacher.t_course }})</h3>
-        <p class="text-info">Detailed breakdown of the feedback received for this course.</p>
+        <h3 class="text-primary"><b>{{ teacher.t_first_name }} {{ teacher.t_last_name }} ({{ teacher.t_course }}</b>)</h3>
+        
 
         <h3 class="mt-5 mb-3">Summary Ratings</h3>
         <div class="table-responsive">
@@ -41,7 +41,7 @@ wwwwwwww
             {% for remark in remarks %}
                 <div class="remark-item">
                     <p style="font-style: italic;">"{{ remark.e_remarks }}"</p>
-                    <small class="text-info">
+                    <small class="text-warning">
                         Submitted by {{ remark.s_year_level }} on {{ remark.e_timestamp.strftime('%Y-%m-%d %H:%M') }}
                     </small>
                 </div>

@@ -7,7 +7,7 @@
         {% include '_flash_messages.html' %} 
         
         <h2>Welcome, {{ session['teacher_name'] }}!</h2> 
-        <p class="text-info">Below is the evaluation summary for your assigned course: <strong>{{ teacher.t_course }}</strong></p> 
+        <p class="text-dark">Below is the evaluation summary for your assigned course: <strong>{{ teacher.t_course }}</strong></p> 
 
         <h3 class="mt-5 mb-3">Overall Course Rating (1.00 - 5.00)</h3>
         
@@ -55,7 +55,7 @@
         </div>
         
         <h3 id="update-profile" class="mt-5 mb-3">Update Profile</h3>
-        <p class="text-info">You can update your login credentials and course details here. Your current course is: <strong>{{ teacher.t_course }}</strong>.</p>
+        <p class="text-dark">You can update your login credentials and course details here. Your current course is: <strong>{{ teacher.t_course }}</strong>.</p>
         
         <form method="POST" class="form-grid mt-4">
             <input type="hidden" name="action" value="edit_profile">

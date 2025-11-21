@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "base.html" %}
 wwwwwwww
 {% block title %}Manage Evaluation Questions{% endblock %}
 
@@ -41,8 +41,9 @@ wwwwwwww
                 <input type="text" id="new_q_text" name="new_q_text" class="form-control" placeholder="e.g., The instructor was clear in their expectations." required>
             </div>
               
+            <button type="submit" class="btn btn-secondary mb-3">Add Question</button>
         </form>
-          <button type="submit" class="btn btn-secondary w-100">Add Question</button>
+          
             
     </div>
 {% endblock %}

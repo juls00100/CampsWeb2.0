@@ -18,7 +18,6 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 def get_db():
-    """Opens a new database connection if there is none yet for the current application context."""
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = pymysql.connect(**app.config['MYSQL_CONFIG'])
@@ -26,13 +25,11 @@ def get_db():
 
 @app.teardown_appcontext
 def close_connection(exception):
-    """Closes the database again at the end of the request."""
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
 def init_db():
-    """Initializes the database structure from schema.sql."""
     conn = pymysql.connect(
         host=app.config['MYSQL_CONFIG']['host'],
         user=app.config['MYSQL_CONFIG']['user'],

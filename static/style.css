@@ -315,7 +315,10 @@ select:focus {
 }
 
 .btn {
-    display: inline-block;
+          display: flex;
+      justify-content: space-around; /* Distributes space between buttons */
+      /* Other justify-content options: center, flex-start, flex-end, space-around, space-evenly */
+      gap: 10px; 
     padding: 0.75rem 1.5rem;
     text-align: center;
     border: none;
@@ -346,8 +349,9 @@ select:focus {
 }
 
 .btn-danger {
-    background-color: var(--danger-color);
+    background-color: #C53030;
     color: white;
+    
 }
 
 .btn-danger:hover {

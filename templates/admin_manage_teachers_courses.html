@@ -1,13 +1,51 @@
-{% extends "admin_base.html" %}
-wwwwwwww
+{% extends "base.html" %}
+
 {% block title %}<b>Manage Subjects/Courses</b>{% endblock %}
 
 {% block content %}
     <div class="card-dashboard">
         {% include '_flash_messages.html' %} 
         
-        <h2><b>Manage Teachers/Courses</b></h2> 
-        <br>
+        <h2><b>Manage Teachers/Courses</b></h2>
+
+        <h3 class="mt-5 mb-3">Current Teachers/Courses</h3> {% if teachers %} <div class="table-responsive">
+                <table class="data-table">
+                    <tbody>
+                        {% for teacher in teachers %} 
+                            <tr>
+                                <td>{{ teacher.t_username }}</td> 
+                                <td>{{ teacher.t_first_name }} {{ teacher.t_last_name }}</td> 
+                                <td>{{ teacher.t_course }}</td> 
+                                
+                                <td class="d-flex align-items-center gap-2"> 
+                                
+                                    <a href="{{ url_for('admin_view_evaluations', teacher_id=teacher.t_id) }}" 
+                                    class="btn btn-info btn-sm">
+                                        View Results
+                                    </a>
+                                    
+                                    <a href="{{ url_for('admin_edit_user', user_type='teacher', user_id=teacher.t_id) }}" 
+                                    class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+                                    
+                                    <form method="POST" action="{{ url_for('admin_manage_teachers_courses', teacher_id=teacher.t_id) }}" 
+                                        class="d-inline m-0"  
+                                        onsubmit="return confirm('WARNING: Deleting {{ teacher.t_first_name }} is permanent. Are you sure?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="t_id_to_delete" value="{{ teacher.t_id }}">
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-info mt-4">No teachers have been added yet.</p> {% endif %}
+    <br> <br> <br>
+             <form method="POST" class="form-grid">
             <input type="hidden" name="action" value="add">
             <div class="form-group">
                 <label for="t_username" class="form-label">Login Username</label> <input type="text" id="t_username" name="t_username" class="form-control" required> </div>
@@ -22,37 +60,8 @@ wwwwwwww
             <div class="form-group">
                 <label for="t_course" class="form-label">Course Title</label> <input type="text" id="t_course" name="t_course" class="form-control" required> </div>
             
-            <button type="submit" class="btn btn-primary mt-4" style="grid-column: 1 / -1;">Add Teacher/Course</button> </form>
+            <button type="submit" class="btn btn-primary mt-4" style="grid-column: 1 / -1;">Add Teacher/Course</button>
+        </form>
 
-        <h3 class="mt-5 mb-3">Current Teachers/Courses</h3> {% if teachers %} <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for teacher in teachers %} <tr>
-                                <td>{{ teacher.t_username }}</td> <td>{{ teacher.t_first_name }} {{ teacher.t_last_name }}</td> <td>{{ teacher.t_course }}</td> <td>
-                                    <a href="{{ url_for('admin_view_evaluations', teacher_id=teacher.t_id) }}" class="btn btn-info btn-sm me-2">
-                                        View Results
-                                    </a>
-                                    <a href="{{ url_for('admin_edit_user', user_type='teacher', user_id=teacher.t_id) }}" class="btn btn-warning btn-sm me-2">
-                                        Edit
-                                    </a>
-                                    <form method="POST" class="d-inline" onsubmit="return confirm('WARNING: Deleting this teacher is permanent and only works if no evaluations exist. Are you sure?');"> <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="t_id" value="{{ teacher.t_id }}"> <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p class="alert alert-info mt-4">No teachers have been added yet.</p> {% endif %}
-    </div>
+        </div>
 {% endblock %}

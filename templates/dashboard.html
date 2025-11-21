@@ -6,7 +6,7 @@
     <div class="card card-dashboard">
         {% include '_flash_messages.html' %} 
         
-        <h2>Welcome back, {{ session['student_name'] }}!</h2>
+        <h2>Welcome back, <b>{{ session['student_name'] }}</b>!</h2>
         
         <div class="stat-grid mt-4">
             <div class="stat-box status-{{ student.s_status.lower() }}">
@@ -31,7 +31,6 @@
             <p><strong>School ID:</strong> <span>{{ student.s_schoolID }}</span></p>
             <p><strong>Email:</strong> <span>{{ student.s_email }}</span></p>
             <p><strong>Year Level:</strong> <span>{{ student.s_year_level }}</span></p>
-            <p><strong>Registered On:</strong> <span>{{ student.s_registration_date }}</span></p>
         </div>
 
         <h3 class="mt-5 mb-3">Update Profile</h3>
@@ -66,8 +65,7 @@
                 <label for="s_confirm_password">Confirm Password</label>
                 <input type="password" id="s_confirm_password" name="s_confirm_password" placeholder="Confirm new password" required>
             </div>
-            
-            <button type="submit" class="btn btn-primary">Update Profile</button>
+            <button type="submit" class="btn btn-primary mt-3" style="grid-column: 1 / -1;">Save Profile Changes</button>
         </form>
         
     </div>
